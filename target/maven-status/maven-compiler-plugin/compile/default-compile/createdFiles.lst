@@ -7,7 +7,7 @@ com/example/courseplatform/model/User$UserBuilder.class
 com/example/courseplatform/model/Subtopic$SubtopicBuilder.class
 com/example/courseplatform/CoursePlatformApplication.class
 com/example/courseplatform/model/SubtopicProgress$SubtopicProgressBuilder.class
-com/example/courseplatform/model/User.class
 com/example/courseplatform/model/Course$CourseBuilder.class
+com/example/courseplatform/model/User.class
 com/example/courseplatform/model/Course.class
 com/example/courseplatform/model/Topic$TopicBuilder.class
