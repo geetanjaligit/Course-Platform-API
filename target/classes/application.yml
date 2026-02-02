@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: course-platform
+  datasource:
+    url: jdbc:postgresql://localhost:5432/course_platform
+    username: postgres
+    password: mypassword
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        
+server:
+  port: 8081
+
+jwt:
+  secret: 9a4f4e35455b583235213c373566343822262d4a614e645267556b58703273357638792F423F4528482B4D6251655468576D5A7134743777217A25432646294A
+  expiration: 86400000 
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
