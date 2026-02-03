@@ -50,7 +50,7 @@
                 {
                     "id": "work-and-energy",
                     "title": "Work and Energy",
-                    "topics": [
+                    "subtopics": [
                         {
                             "id": "work",
                             "title": "Work",

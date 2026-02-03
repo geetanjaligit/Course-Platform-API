@@ -14,48 +14,51 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String errorName = "Internal Server Error";
+        @ExceptionHandler(RuntimeException.class)
+        public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException e) {
+                HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+                String errorName = "Internal Server Error";
 
-        if (e.getMessage().equals("Email already exists")) {
-            status = HttpStatus.CONFLICT;
-            errorName = "Conflict";
+                if (e.getMessage().equals("Email already exists")) {
+                        status = HttpStatus.CONFLICT;
+                        errorName = "Conflict";
+                } else if (e.getMessage().equals("Course not found")) {
+                        status = HttpStatus.NOT_FOUND;
+                        errorName = "Not Found";
+                }
+
+                return new ResponseEntity<>(
+                                ErrorResponse.builder()
+                                                .error(errorName)
+                                                .message(e.getMessage())
+                                                .timestamp(LocalDateTime.now())
+                                                .build(),
+                                status);
         }
 
-        return new ResponseEntity<>(
-                ErrorResponse.builder()
-                        .error(errorName)
-                        .message(e.getMessage())
-                        .timestamp(LocalDateTime.now())
-                        .build(),
-                status);
-    }
+        @ExceptionHandler(BadCredentialsException.class)
+        public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
+                return new ResponseEntity<>(
+                                ErrorResponse.builder()
+                                                .error("Unauthorized")
+                                                .message("Invalid email or password")
+                                                .timestamp(LocalDateTime.now())
+                                                .build(),
+                                HttpStatus.UNAUTHORIZED);
+        }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException e) {
-        return new ResponseEntity<>(
-                ErrorResponse.builder()
-                        .error("Unauthorized")
-                        .message("Invalid email or password")
-                        .timestamp(LocalDateTime.now())
-                        .build(),
-                HttpStatus.UNAUTHORIZED);
-    }
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
+                String message = ex.getBindingResult().getFieldErrors().stream()
+                                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                                .collect(Collectors.joining(", "));
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationExceptions(MethodArgumentNotValidException ex) {
-        String message = ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> error.getField() + ": " + error.getDefaultMessage())
-                .collect(Collectors.joining(", "));
-
-        return new ResponseEntity<>(
-                ErrorResponse.builder()
-                        .error("Bad Request")
-                        .message(message)
-                        .timestamp(LocalDateTime.now())
-                        .build(),
-                HttpStatus.BAD_REQUEST);
-    }
+                return new ResponseEntity<>(
+                                ErrorResponse.builder()
+                                                .error("Bad Request")
+                                                .message(message)
+                                                .timestamp(LocalDateTime.now())
+                                                .build(),
+                                HttpStatus.BAD_REQUEST);
+        }
 }

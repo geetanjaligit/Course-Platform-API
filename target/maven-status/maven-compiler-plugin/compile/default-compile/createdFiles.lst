@@ -1,4 +1,6 @@
+com/example/courseplatform/service/CourseService.class
 com/example/courseplatform/repository/SubtopicProgressRepository.class
+com/example/courseplatform/dto/CourseListDTO.class
 com/example/courseplatform/dto/RegisterRequest.class
 com/example/courseplatform/config/SecurityConfig.class
 com/example/courseplatform/service/SeedDataService.class
@@ -8,9 +10,11 @@ com/example/courseplatform/controller/AuthController.class
 com/example/courseplatform/CoursePlatformApplication.class
 com/example/courseplatform/repository/CourseRepository.class
 com/example/courseplatform/dto/ErrorResponse$ErrorResponseBuilder.class
+com/example/courseplatform/controller/CourseController.class
 com/example/courseplatform/model/Course$CourseBuilder.class
 com/example/courseplatform/exception/GlobalExceptionHandler.class
 com/example/courseplatform/model/Course.class
+com/example/courseplatform/dto/CourseListResponse.class
 com/example/courseplatform/model/Enrollment.class
 com/example/courseplatform/security/JwtAuthenticationFilter.class
 com/example/courseplatform/model/Subtopic.class
@@ -21,12 +25,15 @@ com/example/courseplatform/repository/UserRepository.class
 com/example/courseplatform/dto/AuthResponse.class
 com/example/courseplatform/service/SeedDataService$1.class
 com/example/courseplatform/repository/TopicRepository.class
+com/example/courseplatform/dto/CourseListDTO$CourseListDTOBuilder.class
 com/example/courseplatform/service/AuthService.class
 com/example/courseplatform/dto/AuthResponse$AuthResponseBuilder.class
 com/example/courseplatform/model/User$UserBuilder.class
 com/example/courseplatform/dto/ErrorResponse.class
+com/example/courseplatform/security/CustomUserDetailsService.class
 com/example/courseplatform/model/Subtopic$SubtopicBuilder.class
 com/example/courseplatform/model/SubtopicProgress$SubtopicProgressBuilder.class
+com/example/courseplatform/dto/CourseListResponse$CourseListResponseBuilder.class
 com/example/courseplatform/model/User.class
 com/example/courseplatform/repository/SubtopicRepository.class
 com/example/courseplatform/dto/RegisterRequest$RegisterRequestBuilder.class
