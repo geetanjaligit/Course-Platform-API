@@ -15,10 +15,10 @@ spring:
       hibernate:
         format_sql: true
   elasticsearch:
-    uris: ${ELASTICSEARCH_URL:localhost:9200}
+    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
         
 server:
-  port: ${SERVER_PORT:8081}
+  port: ${PORT:8081}
 
 jwt:
   secret: ${JWT_SECRET:your_very_long_random_jwt_secret_here_at_least_64_chars}
