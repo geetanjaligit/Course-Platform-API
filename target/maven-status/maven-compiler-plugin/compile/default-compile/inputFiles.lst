@@ -38,6 +38,7 @@
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/service/AuthService.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/repository/SubtopicProgressRepository.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/model/User.java
+/home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/config/OpenApiConfig.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/repository/EnrollmentRepository.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/dto/SearchResultDTO.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/controller/EnrollmentController.java

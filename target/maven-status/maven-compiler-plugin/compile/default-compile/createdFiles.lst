@@ -8,6 +8,7 @@ com/example/courseplatform/model/Topic.class
 com/example/courseplatform/dto/LoginRequest.class
 com/example/courseplatform/controller/EnrollmentController.class
 com/example/courseplatform/elasticsearch/repository/CourseSearchRepository.class
+com/example/courseplatform/config/OpenApiConfig.class
 com/example/courseplatform/controller/AuthController.class
 com/example/courseplatform/dto/CourseSearchResult$CourseSearchResultBuilder.class
 com/example/courseplatform/controller/CourseController.class
