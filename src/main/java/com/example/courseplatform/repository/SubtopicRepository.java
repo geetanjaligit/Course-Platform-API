@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface SubtopicRepository extends JpaRepository<Subtopic, String> {
     List<Subtopic> findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(String title, String content);
+
+    long countByTopic_Course_Id(String courseId);
 }

@@ -1,14 +1,14 @@
 package com.example.courseplatform.controller;
 
 import com.example.courseplatform.dto.CourseListResponse;
+import com.example.courseplatform.dto.EnrollmentResponse;
 import com.example.courseplatform.model.Course;
 import com.example.courseplatform.service.CourseService;
+import com.example.courseplatform.service.EnrollmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseController {
 
     private final CourseService courseService;
+    private final EnrollmentService enrollmentService;
 
     @GetMapping
     public ResponseEntity<CourseListResponse> getAllCourses() {
@@ -25,5 +26,10 @@ public class CourseController {
     @GetMapping("/{courseId}")
     public ResponseEntity<Course> getCourseById(@PathVariable String courseId) {
         return ResponseEntity.ok(courseService.getCourseById(courseId));
+    }
+
+    @PostMapping("/{courseId}/enroll")
+    public ResponseEntity<EnrollmentResponse> enrollInCourse(@PathVariable String courseId) {
+        return new ResponseEntity<>(enrollmentService.enrollUser(courseId), HttpStatus.CREATED);
     }
 }

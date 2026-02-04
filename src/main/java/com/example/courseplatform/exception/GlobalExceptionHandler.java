@@ -25,6 +25,9 @@ public class GlobalExceptionHandler {
                 } else if (e.getMessage().equals("Course not found")) {
                         status = HttpStatus.NOT_FOUND;
                         errorName = "Not Found";
+                } else if (e.getMessage().equals("You are already enrolled in this course")) {
+                        status = HttpStatus.CONFLICT;
+                        errorName = "Already enrolled";
                 }
 
                 return new ResponseEntity<>(

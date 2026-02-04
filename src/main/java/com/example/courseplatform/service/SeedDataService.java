@@ -9,7 +9,6 @@ import com.example.courseplatform.repository.CourseRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
@@ -20,9 +19,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class SeedDataService {
 
@@ -30,6 +29,16 @@ public class SeedDataService {
     private final CourseSearchRepository courseSearchRepository;
     private final EmbeddingModel embeddingModel;
     private final ObjectMapper objectMapper;
+
+    public SeedDataService(CourseRepository courseRepository,
+            CourseSearchRepository courseSearchRepository,
+            Optional<EmbeddingModel> embeddingModel,
+            ObjectMapper objectMapper) {
+        this.courseRepository = courseRepository;
+        this.courseSearchRepository = courseSearchRepository;
+        this.embeddingModel = embeddingModel.orElse(null);
+        this.objectMapper = objectMapper;
+    }
 
     @PostConstruct
     @Transactional
@@ -83,8 +92,8 @@ public class SeedDataService {
                     .content(course.getDescription())
                     .courseId(course.getId())
                     .courseTitle(course.getTitle())
-                    .embedding(toDoubleArray(embeddingModel.embed(course.getTitle() + " "
-                            + (course.getDescription() != null ? course.getDescription() : ""))))
+                    .embedding(getEmbeddingSafe(course.getTitle() + " "
+                            + (course.getDescription() != null ? course.getDescription() : "")))
                     .build());
 
             if (course.getTopics() != null) {
@@ -96,7 +105,7 @@ public class SeedDataService {
                             .title(topic.getTitle())
                             .courseId(course.getId())
                             .courseTitle(course.getTitle())
-                            .embedding(toDoubleArray(embeddingModel.embed(topic.getTitle())))
+                            .embedding(getEmbeddingSafe(topic.getTitle()))
                             .build());
 
                     if (topic.getSubtopics() != null) {
@@ -111,8 +120,8 @@ public class SeedDataService {
                                     .courseTitle(course.getTitle())
                                     .topicId(topic.getId())
                                     .topicTitle(topic.getTitle())
-                                    .embedding(toDoubleArray(embeddingModel.embed(subtopic.getTitle() + " "
-                                            + (subtopic.getContent() != null ? subtopic.getContent() : ""))))
+                                    .embedding(getEmbeddingSafe(subtopic.getTitle() + " "
+                                            + (subtopic.getContent() != null ? subtopic.getContent() : "")))
                                     .build());
                         }
                     }
@@ -124,10 +133,22 @@ public class SeedDataService {
         log.info("Successfully indexed {} items to Elasticsearch with embeddings.", documents.size());
     }
 
-    private double[] toDoubleArray(List<Double> doubleList) {
-        double[] doubleArray = new double[doubleList.size()];
-        for (int i = 0; i < doubleList.size(); i++) {
-            doubleArray[i] = doubleList.get(i);
+    private double[] getEmbeddingSafe(String text) {
+        if (embeddingModel == null || text == null) {
+            return null;
+        }
+        try {
+            return toDoubleArray(embeddingModel.embed(text));
+        } catch (Exception e) {
+            log.warn("Failed to generate embedding for text: {}. Error: {}", text, e.getMessage());
+            return null;
+        }
+    }
+
+    private double[] toDoubleArray(List<Double> list) {
+        double[] doubleArray = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            doubleArray[i] = list.get(i);
         }
         return doubleArray;
     }
