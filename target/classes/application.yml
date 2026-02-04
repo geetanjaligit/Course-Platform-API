@@ -19,12 +19,7 @@ spring:
     api-key: ${ELASTICSEARCH_API_KEY}
     socket-timeout: 30s
     connection-timeout: 10s
-  ssl:
-    bundle:
-      jks:
-        web-server:
-          truststore:
-            type: PKCS12
+  
         
 server:
   port: ${PORT:8081}
