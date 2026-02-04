@@ -1,4 +1,5 @@
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/dto/CourseListResponse.java
+/home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/config/ElasticConfig.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/service/SeedDataService.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/service/SearchService.java
 /home/aajmaiupar/Documents/spring-boot project/Course Platform API/src/main/java/com/example/courseplatform/security/JwtAuthenticationFilter.java

@@ -46,6 +46,7 @@ com/example/courseplatform/CoursePlatformApplication.class
 com/example/courseplatform/repository/CourseRepository.class
 com/example/courseplatform/dto/ErrorResponse$ErrorResponseBuilder.class
 com/example/courseplatform/model/Course$CourseBuilder.class
+com/example/courseplatform/config/ElasticConfig.class
 com/example/courseplatform/model/Enrollment.class
 com/example/courseplatform/model/Subtopic.class
 com/example/courseplatform/repository/EnrollmentRepository.class
