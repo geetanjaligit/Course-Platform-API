@@ -15,7 +15,16 @@ spring:
       hibernate:
         format_sql: true
   elasticsearch:
-    uris: ${ELASTICSEARCH_URL:http://localhost:9200}
+    uris: ${ELASTICSEARCH_URL}
+    api-key: ${ELASTICSEARCH_API_KEY}
+    socket-timeout: 30s
+    connection-timeout: 10s
+  ssl:
+    bundle:
+      jks:
+        web-server:
+          truststore:
+            type: PKCS12
         
 server:
   port: ${PORT:8081}
