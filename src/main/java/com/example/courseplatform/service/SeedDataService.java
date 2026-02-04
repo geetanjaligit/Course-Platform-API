@@ -1,5 +1,7 @@
 package com.example.courseplatform.service;
 
+import com.example.courseplatform.elasticsearch.document.CourseDocument;
+import com.example.courseplatform.elasticsearch.repository.CourseSearchRepository;
 import com.example.courseplatform.model.Course;
 import com.example.courseplatform.model.Topic;
 import com.example.courseplatform.model.Subtopic;
@@ -11,9 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.ai.embedding.EmbeddingModel;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +27,8 @@ import java.util.Map;
 public class SeedDataService {
 
     private final CourseRepository courseRepository;
+    private final CourseSearchRepository courseSearchRepository;
+    private final EmbeddingModel embeddingModel;
     private final ObjectMapper objectMapper;
 
     @PostConstruct
@@ -55,11 +61,74 @@ public class SeedDataService {
                     }
                 }
                 courseRepository.saveAll(courses);
-                log.info("Successfully seeded {} courses.", courses.size());
+                log.info("Successfully seeded {} courses to DB.", courses.size());
+                indexData(courses);
             }
 
         } catch (Exception e) {
             log.error("Failed to seed data: ", e);
         }
+    }
+
+    private void indexData(List<Course> courses) {
+        log.info("Indexing data to Elasticsearch...");
+        List<CourseDocument> documents = new ArrayList<>();
+
+        for (Course course : courses) {
+            // Index Course
+            documents.add(CourseDocument.builder()
+                    .id(course.getId())
+                    .type("COURSE")
+                    .title(course.getTitle())
+                    .content(course.getDescription())
+                    .courseId(course.getId())
+                    .courseTitle(course.getTitle())
+                    .embedding(toDoubleArray(embeddingModel.embed(course.getTitle() + " "
+                            + (course.getDescription() != null ? course.getDescription() : ""))))
+                    .build());
+
+            if (course.getTopics() != null) {
+                for (Topic topic : course.getTopics()) {
+                    // Index Topic
+                    documents.add(CourseDocument.builder()
+                            .id(topic.getId())
+                            .type("TOPIC")
+                            .title(topic.getTitle())
+                            .courseId(course.getId())
+                            .courseTitle(course.getTitle())
+                            .embedding(toDoubleArray(embeddingModel.embed(topic.getTitle())))
+                            .build());
+
+                    if (topic.getSubtopics() != null) {
+                        for (Subtopic subtopic : topic.getSubtopics()) {
+                            // Index Subtopic
+                            documents.add(CourseDocument.builder()
+                                    .id(subtopic.getId())
+                                    .type("SUBTOPIC")
+                                    .title(subtopic.getTitle())
+                                    .content(subtopic.getContent())
+                                    .courseId(course.getId())
+                                    .courseTitle(course.getTitle())
+                                    .topicId(topic.getId())
+                                    .topicTitle(topic.getTitle())
+                                    .embedding(toDoubleArray(embeddingModel.embed(subtopic.getTitle() + " "
+                                            + (subtopic.getContent() != null ? subtopic.getContent() : ""))))
+                                    .build());
+                        }
+                    }
+                }
+            }
+        }
+
+        courseSearchRepository.saveAll(documents);
+        log.info("Successfully indexed {} items to Elasticsearch with embeddings.", documents.size());
+    }
+
+    private double[] toDoubleArray(List<Double> doubleList) {
+        double[] doubleArray = new double[doubleList.size()];
+        for (int i = 0; i < doubleList.size(); i++) {
+            doubleArray[i] = doubleList.get(i);
+        }
+        return doubleArray;
     }
 }

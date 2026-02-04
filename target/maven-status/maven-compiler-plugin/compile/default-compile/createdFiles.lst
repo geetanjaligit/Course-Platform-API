@@ -1,9 +1,13 @@
 com/example/courseplatform/service/SearchService.class
 com/example/courseplatform/service/CourseService.class
+com/example/courseplatform/dto/SearchResponse.class
+com/example/courseplatform/dto/SearchMatch$SearchMatchBuilder.class
 com/example/courseplatform/dto/RegisterRequest.class
 com/example/courseplatform/model/Topic.class
 com/example/courseplatform/dto/LoginRequest.class
+com/example/courseplatform/elasticsearch/repository/CourseSearchRepository.class
 com/example/courseplatform/controller/AuthController.class
+com/example/courseplatform/dto/CourseSearchResult$CourseSearchResultBuilder.class
 com/example/courseplatform/controller/CourseController.class
 com/example/courseplatform/exception/GlobalExceptionHandler.class
 com/example/courseplatform/model/Course.class
@@ -16,6 +20,8 @@ com/example/courseplatform/service/SeedDataService$1.class
 com/example/courseplatform/dto/CourseListDTO$CourseListDTOBuilder.class
 com/example/courseplatform/service/AuthService.class
 com/example/courseplatform/dto/SearchResultDTO$ResultType.class
+com/example/courseplatform/dto/SearchMatch.class
+com/example/courseplatform/dto/CourseSearchResult.class
 com/example/courseplatform/dto/ErrorResponse.class
 com/example/courseplatform/security/CustomUserDetailsService.class
 com/example/courseplatform/model/Subtopic$SubtopicBuilder.class
@@ -28,6 +34,7 @@ com/example/courseplatform/dto/CourseListDTO.class
 com/example/courseplatform/dto/SearchResultDTO.class
 com/example/courseplatform/config/SecurityConfig.class
 com/example/courseplatform/service/SeedDataService.class
+com/example/courseplatform/elasticsearch/document/CourseDocument.class
 com/example/courseplatform/CoursePlatformApplication.class
 com/example/courseplatform/repository/CourseRepository.class
 com/example/courseplatform/dto/ErrorResponse$ErrorResponseBuilder.class
@@ -36,12 +43,14 @@ com/example/courseplatform/model/Enrollment.class
 com/example/courseplatform/model/Subtopic.class
 com/example/courseplatform/repository/EnrollmentRepository.class
 com/example/courseplatform/controller/SearchController.class
+com/example/courseplatform/elasticsearch/document/CourseDocument$CourseDocumentBuilder.class
 com/example/courseplatform/dto/AuthResponse.class
 com/example/courseplatform/repository/TopicRepository.class
 com/example/courseplatform/dto/AuthResponse$AuthResponseBuilder.class
 com/example/courseplatform/model/User$UserBuilder.class
 com/example/courseplatform/dto/CourseListResponse$CourseListResponseBuilder.class
 com/example/courseplatform/model/User.class
+com/example/courseplatform/dto/SearchResponse$SearchResponseBuilder.class
 com/example/courseplatform/dto/RegisterRequest$RegisterRequestBuilder.class
 com/example/courseplatform/security/JwtService.class
 com/example/courseplatform/model/Topic$TopicBuilder.class

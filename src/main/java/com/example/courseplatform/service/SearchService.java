@@ -1,66 +1,71 @@
 package com.example.courseplatform.service;
 
-import com.example.courseplatform.dto.SearchResultDTO;
-import com.example.courseplatform.model.Course;
-import com.example.courseplatform.model.Subtopic;
-import com.example.courseplatform.model.Topic;
-import com.example.courseplatform.repository.CourseRepository;
-import com.example.courseplatform.repository.SubtopicRepository;
-import com.example.courseplatform.repository.TopicRepository;
+import com.example.courseplatform.dto.*;
+import com.example.courseplatform.elasticsearch.document.CourseDocument;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.elasticsearch.client.elc.NativeQuery;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
+import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
 public class SearchService {
 
-    private final CourseRepository courseRepository;
-    private final TopicRepository topicRepository;
-    private final SubtopicRepository subtopicRepository;
+        private final ElasticsearchOperations elasticsearchOperations;
 
-    public List<SearchResultDTO> search(String query) {
-        List<SearchResultDTO> results = new ArrayList<>();
+        public SearchResponse search(String query) {
+                Map<String, CourseSearchResult> courseMap = new HashMap<>();
 
-        // Search Courses
-        List<Course> courses = courseRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query,
-                query);
-        results.addAll(courses.stream().map(c -> SearchResultDTO.builder()
-                .id(c.getId())
-                .type(SearchResultDTO.ResultType.COURSE)
-                .title(c.getTitle())
-                .snippet(c.getDescription() != null && c.getDescription().length() > 100
-                        ? c.getDescription().substring(0, 100) + "..."
-                        : c.getDescription())
-                .courseId(c.getId())
-                .build()).collect(Collectors.toList()));
+                //Build a robust search query using Multi-Match with Fuzziness
+                // This handles typos and multi-word phrases correctly.
+                NativeQuery searchKeywords = NativeQuery.builder()
+                                .withQuery(q -> q.multiMatch(m -> m
+                                                .fields("title", "content")
+                                                .query(query)
+                                                .fuzziness("AUTO")))
+                                .build();
 
-        // Search Topics
-        List<Topic> topics = topicRepository.findByTitleContainingIgnoreCase(query);
-        results.addAll(topics.stream().map(t -> SearchResultDTO.builder()
-                .id(t.getId())
-                .type(SearchResultDTO.ResultType.TOPIC)
-                .title(t.getTitle())
-                .courseId(t.getCourse().getId())
-                .build()).collect(Collectors.toList()));
+                SearchHits<CourseDocument> hits = elasticsearchOperations.search(searchKeywords, CourseDocument.class);
 
-        // Search Subtopics
-        List<Subtopic> subtopics = subtopicRepository
-                .findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(query, query);
-        results.addAll(subtopics.stream().map(s -> SearchResultDTO.builder()
-                .id(s.getId())
-                .type(SearchResultDTO.ResultType.SUBTOPIC)
-                .title(s.getTitle())
-                .snippet(s.getContent() != null && s.getContent().length() > 100
-                        ? s.getContent().substring(0, 100) + "..."
-                        : s.getContent())
-                .courseId(s.getTopic().getCourse().getId())
-                .topicId(s.getTopic().getId())
-                .build()).collect(Collectors.toList()));
+                //Process Hits
+                for (SearchHit<CourseDocument> hit : hits) {
+                        CourseDocument doc = hit.getContent();
+                        CourseSearchResult csr = courseMap.computeIfAbsent(doc.getCourseId(),
+                                        id -> CourseSearchResult.builder()
+                                                        .courseId(doc.getCourseId())
+                                                        .courseTitle(doc.getCourseTitle())
+                                                        .matches(new ArrayList<>())
+                                                        .build());
 
-        return results;
-    }
+                        String type = doc.getType().toLowerCase();
+                        if (type.equals("subtopic") && !doc.getTitle().toLowerCase().contains(query.toLowerCase())) {
+                                type = "content";
+                        }
+
+                        csr.getMatches().add(SearchMatch.builder()
+                                        .type(type)
+                                        .topicTitle(doc.getTopicTitle())
+                                        .subtopicId(doc.getType().equals("SUBTOPIC") ? doc.getId() : null)
+                                        .subtopicTitle(doc.getType().equals("SUBTOPIC") ? doc.getTitle() : null)
+                                        .snippet(truncate(doc.getContent()))
+                                        .build());
+                }
+
+                return SearchResponse.builder()
+                                .query(query)
+                                .results(new ArrayList<>(courseMap.values()))
+                                .build();
+        }
+
+        private String truncate(String text) {
+                if (text == null)
+                        return null;
+                return text.length() > 100 ? text.substring(0, 100) + "..." : text;
+        }
 }
