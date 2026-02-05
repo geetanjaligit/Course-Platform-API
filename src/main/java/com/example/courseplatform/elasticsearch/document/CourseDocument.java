@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(indexName = "course_content")
+@Document(indexName = "course_content", createIndex = false)
 public class CourseDocument {
     @Id
     private String id; // this will be the subtopicId or topicId or courseId
